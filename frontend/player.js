@@ -223,7 +223,8 @@ const BACKEND_URL = window.location.hostname === 'localhost' ? 'http://localhost
             const password = document.getElementById('auth-pass').value;
             const path = isLoginMode ? 'login' : 'register';
             try {
-                const res = await fetch(`http://localhost:5000/api/auth/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
+                // Change from: fetch(`http://localhost:5000/api/auth/${path}`...
+                const res = await fetch(`${BACKEND_URL}/api/auth/${path}`, {
                 const data = await res.json(); if (!res.ok) return alert(data.error);
                 if (isLoginMode) { localStorage.setItem('vault_token', data.token); localStorage.setItem('vault_user', data.username); location.reload(); } 
                 else { alert("Account created successfully!"); isLoginMode = true; authToggleMode.click(); }
