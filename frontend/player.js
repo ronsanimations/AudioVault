@@ -22,16 +22,20 @@ try {
     const vaultView = document.getElementById('vault-view');
     const analyticsView = document.getElementById('analytics-view');
 
-    let vaultPlaylist = [];     
-    let originalUnshuffledList = []; 
-    let currentTrackIndex = -1;  
-    let isLoopingActive = false;
-    let isShuffleActive = false;
-    let currentFolderFilter = null;
-    let authToken = localStorage.getItem('vault_token') || null;
+    // Global Application State Containers
+let vaultPlaylist = [];     
+let originalUnshuffledList = []; 
+let currentTrackIndex = -1;  
+let isLoopingActive = false;
+let isShuffleActive = false;
+let currentFolderFilter = null;
+let authToken = localStorage.getItem('vault_token') || null;
 
-    let favoritedTrackIds = JSON.parse(localStorage.getItem('vault_favorites')) || [];
-    let recentlyPlayedTracks = [];
+let favoritedTrackIds = JSON.parse(localStorage.getItem('vault_favorites')) || [];
+let recentlyPlayedTracks = [];
+
+// NEW: Dynamic network link switcher
+const BACKEND_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://onrender.com'; 
 
     if (themeSelector) {
         const savedAccent = localStorage.getItem('vault_accent_color') || '#00F0FF';
