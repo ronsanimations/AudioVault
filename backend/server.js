@@ -8,9 +8,12 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = 5000;
-const DB_FILE = path.join(__dirname, 'database.json');
-const USERS_FILE = path.join(__dirname, 'users.json');
-const uploadDir = path.join(__dirname, 'uploads');
+const IS_RENDER = process.env.RENDER === 'true';
+
+const DB_FILE = IS_RENDER ? '/opt/render/project/src/backend/uploads/database.json' : path.join(__dirname, 'database.json');
+const USERS_FILE = IS_RENDER ? '/opt/render/project/src/backend/uploads/users.json' : path.join(__dirname, 'users.json');
+const uploadDir = IS_RENDER ? '/opt/render/project/src/backend/uploads' : path.join(__dirname, 'uploads');
+
 const JWT_SECRET = 'audiovault_local_secret_key_2026';
 
 // Initialization checks for physical hard drive storage files
