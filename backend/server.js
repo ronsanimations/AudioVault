@@ -19,7 +19,7 @@ const JWT_SECRET = 'audiovault_local_secret_key_2026';
 // Initialization checks for physical hard drive storage files
 if (!fs.existsSync(DB_FILE)) fs.writeFileSync(DB_FILE, JSON.stringify([], null, 2));
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://onrender.com'],
+    origin: ['http://localhost:3000', 'https://onrender.com'], // Mapped to match your new frontend app link exactly
     credentials: true
 }));
 
