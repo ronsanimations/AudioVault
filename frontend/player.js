@@ -260,7 +260,7 @@ const BACKEND_URL = window.location.hostname === 'localhost' ? 'http://localhost
     async function loadVaultTracks() {
         if (!authToken) return;
         try {
-            const response = await fetch('http://localhost:5000/api/songs', { headers: { 'Authorization': `Bearer ${authToken}` } });
+            const response = await fetch(`${BACKEND_URL}/api/songs`, { headers: { 'Authorization': `Bearer ${authToken}` } });
             const tracks = await response.json();
             vaultPlaylist = currentFolderFilter ? tracks.filter(t => t.folder === currentFolderFilter) : tracks;
             const targetGrid = currentFolderFilter ? document.getElementById('folder-music-grid') : document.getElementById('main-music-grid');
