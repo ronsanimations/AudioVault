@@ -1,0 +1,235 @@
+/* CSS Variables to control the safe, premium dark theme */
+:root {
+    --vault-bg: #0D0F12;       /* Slate Obsidian - distinct from YouTube's black */
+    --vault-panel: #161920;    /* Card panel backing */
+    --vault-accent: #00F0FF;   /* Electric Teal instead of YouTube Red */
+    --text-main: #FFFFFF;
+    --text-muted: #8A94A6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: var(--vault-bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+/* Left Hand Navigation Menu - Clean & Geometric */
+.sidebar {
+    width: 240px; background-color: var(--vault-panel);
+    padding: 24px; display: flex; flex-direction: column; gap: 20px;
+    border-right: 1px solid #202532;
+}
+.logo-area { font-size: 22px; font-weight: bold; color: var(--vault-accent); letter-spacing: 1px; }
+.nav-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.nav-item { color: var(--text-muted); text-decoration: none; font-weight: 500; cursor: pointer; transition: 0.2s; }
+.nav-item:hover, .nav-item.active { color: var(--text-main); }
+
+/* Main Workspace Content Area */
+.main-content { flex: 1; padding: 30px; overflow-y: auto; padding-bottom: 120px; }
+.section-title { font-size: 24px; margin-bottom: 20px; font-weight: 600; }
+
+/* Grid View Layout for Uploaded Custom Tracks */
+.music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 24px; }
+.song-card { background: var(--vault-panel); padding: 16px; border-radius: 12px; border: 1px solid transparent; cursor: pointer; transition: 0.3s; }
+.song-card:hover { border-color: var(--vault-accent); transform: translateY(-4px); }
+.cover-art { width: 100%; aspect-ratio: 1; background: #202532; border-radius: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background-size: cover; background-position: center; }
+.track-title { font-weight: bold; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.artist-name { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+
+/* Persistent Bottom Audio Player Bar */
+.player-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 90px;
+    background-color: var(--vault-panel); border-top: 1px solid #202532;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 1000;
+}
+.player-left { display: flex; align-items: center; gap: 14px; width: 30%; }
+.player-thumb { width: 50px; height: 50px; background: #202532; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-size: cover; background-position: center; }
+.player-controls { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 40%; }
+.control-buttons { display: flex; align-items: center; gap: 24px; }
+.play-btn { background: var(--vault-accent); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 16px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+.nav-btn { background: none; border: none; color: var(--text-main); font-size: 18px; cursor: pointer; }
+.timeline-container { display: flex; align-items: center; gap: 10px; width: 100%; }
+.progress-bar { flex: 1; height: 4px; background: #2c3241; border-radius: 2px; cursor: pointer; position: relative; }
+.progress-fill { width: 0%; height: 100%; background: var(--vault-accent); border-radius: 2px; }
+.time-stamp { font-size: 12px; color: var(--text-muted); width: 35px; text-align: center; }
+.player-right { width: 30%; text-align: right; color: var(--text-muted); font-size: 14px; }
+
+/* Custom Delete Button Layout */
+.song-card { position: relative; }
+.delete-vault-btn {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(22, 25, 32, 0.85); color: #FF4A4A;
+    border: 1px solid #FF4A4A; width: 30px; height: 30px;
+    border-radius: 50%; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    font-weight: bold; font-size: 14px; opacity: 0;
+    transition: 0.2s ease-in-out; z-index: 10;
+}
+.song-card:hover .delete-vault-btn { opacity: 1; }
+.delete-vault-btn:hover { background: #FF4A4A; color: #000000; }
+
+/* Loop & Folder Navigation Layout styles */
+.nav-btn.active { color: var(--vault-accent); text-shadow: 0 0 8px var(--vault-accent); }
+.folder-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.vault-btn { background: transparent; border: 1px solid var(--vault-accent); color: var(--vault-accent); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+.vault-btn:hover { background: var(--vault-accent); color: #000; }
+.folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.folder-card { background: #1c202b; padding: 20px; border-radius: 12px; border: 1px solid #2c3241; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; }
+.folder-card:hover { border-color: var(--vault-accent); background: var(--vault-panel); }
+.folder-icon { font-size: 40px; margin-bottom: 8px; display: block; }
+
+/* Active Track Glow Highlight State */
+.song-card.now-playing {
+    border-color: var(--vault-accent);
+    background: #1e232d;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Subtle breathing indicator on the cover artwork */
+.song-card.now-playing .cover-art {
+    border: 1px solid var(--vault-accent);
+    animation: vaultPulse 2s infinite ease-in-out;
+}
+
+@keyframes vaultPulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+/* Refined Grid Sizing - Fixes text clipping */
+.music-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+}
+.track-title, .artist-name {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sidebar History Sidebar Section */
+.history-section {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #202532;
+}
+.history-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+.history-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.history-item {
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.2s;
+}
+.history-item:hover {
+    color: var(--vault-accent);
+}
+
+/* Favorites Heart Button Panel */
+.heart-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+    margin-right: 16px;
+}
+.heart-btn:hover {
+    transform: scale(1.1);
+}
+.heart-btn.favorited {
+    color: #FF2E93; /* Hot pink neon favorited highlight */
+    text-shadow: 0 0 8px rgba(255, 46, 147, 0.4);
+}
+
+/* Color Accent Switch Handling override transitions */
+body, .logo-area, .nav-item, .vault-btn, .song-card, .play-btn, .progress-fill, .folder-card {
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+/* Refined Grid Sizing - Fixes text clipping */
+.music-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+}
+.track-title, .artist-name {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sidebar History Sidebar Section */
+.history-section {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #202532;
+}
+.history-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+.history-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.history-item {
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.2s;
+}
+.history-item:hover {
+    color: var(--vault-accent);
+}
+
+/* Favorites Heart Button Panel */
+.heart-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+    margin-right: 16px;
+}
+.heart-btn:hover {
+    transform: scale(1.1);
+}
+.heart-btn.favorited {
+    color: #FF2E93;
+    text-shadow: 0 0 8px rgba(255, 46, 147, 0.4);
+}
+
+/* Color Accent Switch Handling override transitions */
+body, .logo-area, .nav-item, .vault-btn, .song-card, .play-btn, .progress-fill, .folder-card {
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}

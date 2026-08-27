@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioVault - Secure Music Streaming</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Left Hand Sidebar Navigation Menu -->
+    <div class="sidebar">
+        <div class="logo-area">AudioVault</div>
+        <ul class="nav-links">
+            <li><a class="nav-item active" id="nav-feed">Acoustic Feed</a></li>
+            <li><a class="nav-item" id="nav-vault">My Vault</a></li>
+            <li><a class="nav-item" id="nav-analytics" style="display:none;">Vault Analytics</a></li>
+            <li><a class="nav-item" id="upload-studio-btn" style="display:none;">Upload Studio</a></li>
+            <li><hr style="border-color:#2c3241; margin:10px 0;"></li>
+            <li><a class="nav-item" id="auth-status-btn">Sign In / Register</a></li>
+        </ul>
+
+        <!-- Recently Played Side Menu Block -->
+        <div class="history-section" id="sidebar-history-block" style="display: none;">
+            <div class="history-title">Recently Played</div>
+            <ul class="history-list" id="recent-history-list"></ul>
+        </div>
+    </div>
+
+    <!-- Main Content Delivery Core -->
+    <div style="flex:1; display:flex; flex-direction:column; height:100vh;">
+        
+        <!-- Top Navigation Filter Bar -->
+        <div class="top-nav-bar" style="height:64px; border-bottom:1px solid #202532; display:flex; align-items:center; justify-content:space-between; padding:0 30px; background:#161920;">
+            <input type="text" id="search-input-field" placeholder="🔍 Search vault tracks or artists..." style="width:100%; max-width:400px; padding:10px 16px; background:#0d0f12; border:1px solid #2c3241; border-radius:24px; color:#fff; outline:none;">
+            
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase;">Theme:</span>
+                <select id="theme-accent-selector" style="background:#0d0f12; border:1px solid #2c3241; color:#fff; padding:6px 12px; border-radius:6px; outline:none; cursor:pointer;">
+                    <option value="#00F0FF">Electric Teal</option>
+                    <option value="#FF9F00">Neon Amber</option>
+                    <option value="#FF2E93">Cyber Pink</option>
+                    <option value="#39FF14">Acid Green</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="main-content" id="feed-view">
+            <h2 class="section-title">Fresh Vault Discoveries</h2>
+            <div class="music-grid" id="main-music-grid"></div>
+        </div>
+
+        <div class="main-content" id="vault-view" style="display: none;">
+            <div class="folder-header-bar">
+                <h2 class="section-title" id="vault-title">My Folder Vaults</h2>
+                <button class="vault-btn" id="create-folder-btn">+ New Folder</button>
+            </div>
+            <div class="folder-grid" id="main-folder-grid"></div>
+            <div class="music-grid" id="folder-music-grid"></div>
+        </div>
+
+        <div class="main-content" id="analytics-view" style="display: none;">
+            <h2 class="section-title">Creator Studio Analytics</h2>
+            <div class="folder-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+                <div class="folder-card" style="cursor:default; text-align:left; padding:24px;">
+                    <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:8px;">Total Vault Assets</span>
+                    <span id="stat-total-songs" style="font-size:36px; font-weight:bold; color:var(--vault-accent);">0</span>
+                </div>
+                <div class="folder-card" style="cursor:default; text-align:left; padding:24px;">
+                    <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:8px;">Total Play Time</span>
+                    <span id="stat-total-time" style="font-size:36px; font-weight:bold; color:var(--vault-accent);">0 mins</span>
+                </div>
+                <div class="folder-card" style="cursor:default; text-align:left; padding:24px;">
+                    <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:8px;">Drive Storage Pool</span>
+                    <span id="stat-total-size" style="font-size:36px; font-weight:bold; color:var(--vault-accent);">0.0 MB</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Persistent Bottom Media Playing Bar Component -->
+    <div class="player-bar">
+        <div class="player-left">
+            <div class="player-thumb" id="current-thumb">🎵</div>
+            <div>
+                <div class="track-title" id="current-title">Select a Track</div>
+                <div class="artist-name" id="current-artist">AudioVault Media Pipeline</div>
+            </div>
+        </div>
+        <div class="player-controls">
+            <div class="control-buttons">
+                <button class="heart-btn" id="favorite-toggle-btn" title="Add to Favorites">🖤</button>
+                <button class="nav-btn" id="shuffle-toggle-btn" title="Shuffle Playback">🔀</button>
+                <button class="nav-btn" id="skip-back-btn">⏮</button>
+                <button class="nav-btn" id="rewind-10s-btn" title="Rewind 10 Seconds" style="font-size:13px; color:var(--text-muted);">⏪ 10s</button>
+                <button class="play-btn" id="master-play-trigger">▶</button>
+                <button class="nav-btn" id="forward-10s-btn" title="Jump Forward 10 Seconds" style="font-size:13px; color:var(--text-muted);">10s ⏩</button>
+                <button class="nav-btn" id="skip-next-btn">⏭</button>
+                <button class="nav-btn" id="loop-toggle-btn" title="Loop Track">🔁</button>
+            </div>
+            <div class="timeline-container">
+                <span class="time-stamp" id="time-current">0:00</span>
+                <div class="progress-bar" id="track-progress-bar"><div class="progress-fill" id="track-progress-fill"></div></div>
+                <span class="time-stamp" id="time-duration">0:00</span>
+            </div>
+        </div>
+        <div class="player-right"><span>🔊 System Output</span></div>
+    </div>
+
+    <!-- User Authentication Modal Form -->
+    <div id="auth-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:3000; align-items:center; justify-content:center;">
+        <div style="background:#161920; padding:32px; border-radius:16px; border:1px solid var(--vault-accent); width:100%; max-width:380px; position:relative;">
+            <span id="close-auth-modal-btn" style="position:absolute; top:12px; right:20px; font-size:24px; cursor:pointer; color:var(--text-muted);">&times;</span>
+            <h3 style="margin-bottom:20px; font-size:20px; color:var(--vault-accent);" id="auth-modal-title">Access AudioVault Profile</h3>
+            <form id="auth-form" style="display:flex; flex-direction:column; gap:16px;">
+                <input type="text" id="auth-user" placeholder="Username" required style="width:100%; padding:10px; background:#1c202b; border:1px solid #2c3241; border-radius:6px; color:#fff; outline:none;">
+                <input type="password" id="auth-pass" placeholder="Password" required style="width:100%; padding:10px; background:#1c202b; border:1px solid #2c3241; border-radius:6px; color:#fff; outline:none;">
+                <button type="submit" class="vault-btn" style="width:100%; padding:12px; margin-top:10px;" id="auth-submit-btn">Login</button>
+                <p style="font-size:12px; text-align:center; color:var(--text-muted); cursor:pointer;" id="auth-toggle-mode">Don't have an account? Register here</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Studio Pop-up Form Component Modal -->
+    <div id="upload-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center;">
+        <div style="background:#161920; padding:32px; border-radius:16px; border:1px solid var(--vault-accent); width:100%; max-width:450px; position:relative;">
+            <span id="close-modal-btn" style="position:absolute; top:16px; right:20px; font-size:24px; cursor:pointer; color:var(--text-muted);">&times;</span>
+            <h3 style="margin-bottom:20px; font-size:20px; color:var(--vault-accent);">Vault Upload Studio</h3>
+            <form id="upload-form" style="display:flex; flex-direction:column; gap:16px;">
+                <input type="text" id="form-title" placeholder="Track Title" required style="width:100%; padding:10px; background:#1c202b; border:1px solid #2c3241; border-radius:6px; color:#fff; outline:none;">
+                <input type="text" id="form-artist" placeholder="Artist Name" required style="width:100%; padding:10px; background:#1c202b; border:1px solid #2c3241; border-radius:6px; color:#fff; outline:none;">
+                <select id="form-folder" style="width:100%; padding:10px; background:#1c202b; border:1px solid #2c3241; border-radius:6px; color:#fff; outline:none;"></select>
+                <input type="file" id="form-audio" accept="audio/mp3,video/mp4" required style="color:var(--text-muted);">
+                <input type="file" id="form-image" accept="image/*" style="color:var(--text-muted);">
+                <button type="submit" id="vault-submit-btn" style="background:var(--vault-accent); color:#000; border:none; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">Secure to Vault</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="player.js"></script>
+</body>
+</html>
