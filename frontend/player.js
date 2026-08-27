@@ -22,20 +22,19 @@ try {
     const vaultView = document.getElementById('vault-view');
     const analyticsView = document.getElementById('analytics-view');
 
-    // Global Application State Containers
-let vaultPlaylist = [];     
-let originalUnshuffledList = []; 
-let currentTrackIndex = -1;  
-let isLoopingActive = false;
-let isShuffleActive = false;
-let currentFolderFilter = null;
-let authToken = localStorage.getItem('vault_token') || null;
+    let vaultPlaylist = [];     
+    let originalUnshuffledList = []; 
+    let currentTrackIndex = -1;  
+    let isLoopingActive = false;
+    let isShuffleActive = false;
+    let currentFolderFilter = null;
+    let authToken = localStorage.getItem('vault_token') || null;
 
-let favoritedTrackIds = JSON.parse(localStorage.getItem('vault_favorites')) || [];
-let recentlyPlayedTracks = [];
+    let favoritedTrackIds = JSON.parse(localStorage.getItem('vault_favorites')) || [];
+    let recentlyPlayedTracks = [];
 
-// NEW: Dynamic network link switcher
-const BACKEND_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://onrender.com'; 
+    // VERIFIED NETWORK PORTAL SWITCHER (Dodge spelling syntax crashes)
+    const BACKEND_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://onrender.com';
 
     if (themeSelector) {
         const savedAccent = localStorage.getItem('vault_accent_color') || '#00F0FF';
@@ -52,23 +51,7 @@ const BACKEND_URL = window.location.hostname === 'localhost' ? 'http://localhost
         const minutes = Math.floor(secs / 60); const seconds = Math.floor(secs % 60);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
-
-    audioEngine.ontimeupdate = () => {
-        if(!audioEngine.duration) return;
-        const percentage = (audioEngine.currentTime / audioEngine.duration) * 100;
-        if (progressFill) progressFill.style.width = `${percentage}%`;
-        if (timeCurrent) timeCurrent.innerText = formatTime(audioEngine.currentTime);
-    };
-    audioEngine.onloadedmetadata = () => { if (timeDuration) timeDuration.innerText = formatTime(audioEngine.duration); };
-    if (progressBar) {
-        progressBar.onclick = (e) => {
-            if(!audioEngine.duration) return;
-            const rect = progressBar.getBoundingClientRect();
-            audioEngine.currentTime = ((e.clientX - rect.left) / rect.width) * audioEngine.duration;
-        };
-    }
-
-        // ==========================================
+    // ==========================================
     // PART 2 OF 4: SEARCH, SKIP ACTIONS & PLAYBACK
     // ==========================================
     if (searchInput) {
