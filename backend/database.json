@@ -1,0 +1,25 @@
+[
+  {
+    "id": "1787808630110",
+    "userId": "1787808310083",
+    "title": "328",
+    "artist": "Glyde",
+    "folder": null,
+    "audioUrl": "http://localhost:5000/uploads/1787808629454-38347336.mp3",
+    "imageUrl": "http://localhost:5000/uploads/1787808630017-321838785.ico"
+  },
+  {
+    "id": "1787807764325",
+    "title": "Starstruck",
+    "artist": "Glyde",
+    "audioUrl": "http://localhost:5000/uploads/1787807763671-680505879.mp3",
+    "imageUrl": "http://localhost:5000/uploads/1787807764253-728288031.ico"
+  },
+  {
+    "id": "1787807209215",
+    "title": "328",
+    "artist": "Glyde",
+    "audioUrl": "http://localhost:5000/uploads/1787807208558-157969230.mp3",
+    "imageUrl": "http://localhost:5000/uploads/1787807209129-423655847.ico"
+  }
+]
