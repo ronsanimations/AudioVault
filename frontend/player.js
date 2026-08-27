@@ -1,6 +1,6 @@
 try {
     // ==========================================
-    // PART 1 OF 4: BINDINGS, STATE & TIMELINES
+    // PART 1 OF 5: BINDINGS, STATE & TIMELINES
     // ==========================================
     const audioEngine = new Audio();
     const masterPlayTrigger = document.getElementById('master-play-trigger');
@@ -33,7 +33,7 @@ try {
     let favoritedTrackIds = JSON.parse(localStorage.getItem('vault_favorites')) || [];
     let recentlyPlayedTracks = [];
 
-    // VERIFIED NETWORK PORTAL SWITCHER (Dodge spelling syntax crashes)
+    // AUTOMATIC CLOUD ROUTING SWITCHER: Uses your exact live Render url when online
     const BACKEND_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://onrender.com';
 
     if (themeSelector) {
@@ -51,9 +51,25 @@ try {
         const minutes = Math.floor(secs / 60); const seconds = Math.floor(secs % 60);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
+
     // ==========================================
-    // PART 2 OF 4: SEARCH, SKIP ACTIONS & PLAYBACK
+    // PART 2 OF 5: TIMELINES & LIVE FILTERS
     // ==========================================
+    audioEngine.ontimeupdate = () => {
+        if(!audioEngine.duration) return;
+        const percentage = (audioEngine.currentTime / audioEngine.duration) * 100;
+        if (progressFill) progressFill.style.width = `${percentage}%`;
+        if (timeCurrent) timeCurrent.innerText = formatTime(audioEngine.currentTime);
+    };
+    audioEngine.onloadedmetadata = () => { if (timeDuration) timeDuration.innerText = formatTime(audioEngine.duration); };
+    if (progressBar) {
+        progressBar.onclick = (e) => {
+            if(!audioEngine.duration) return;
+            const rect = progressBar.getBoundingClientRect();
+            audioEngine.currentTime = ((e.clientX - rect.left) / rect.width) * audioEngine.duration;
+        };
+    }
+
     if (searchInput) {
         searchInput.oninput = () => {
             const query = searchInput.value.toLowerCase();
@@ -65,6 +81,9 @@ try {
         };
     }
 
+    // ==========================================
+    // PART 3 OF 5: DECK ENGINE CONTROLS & QUEUES
+    // ==========================================
     function playTrackAtIndex(index) {
         if (index < 0 || index >= vaultPlaylist.length) return;
         currentTrackIndex = index;
@@ -132,8 +151,8 @@ try {
         };
     }
 
-        // ==========================================
-    // PART 3 OF 4: FAVORITES, HISTORY & ANALYTICS
+    // ==========================================
+    // PART 4 OF 5: SIDEBAR HISTORY & METRICS
     // ==========================================
     if (favoriteToggleBtn) {
         favoriteToggleBtn.onclick = () => {
@@ -176,8 +195,8 @@ try {
         document.getElementById('stat-total-size').innerText = `${simulatedMegabytes} MB`;
     }
 
-        // ==========================================
-    // PART 4 OF 4: AUTH, FOLDERS & SYSTEM INITIALIZERS
+    // ==========================================
+    // PART 5 OF 5: REGISTRATION NETWORKS & BOOT
     // ==========================================
     const authModal = document.getElementById('auth-modal');
     const authStatusBtn = document.getElementById('auth-status-btn');
@@ -206,8 +225,12 @@ try {
             const password = document.getElementById('auth-pass').value;
             const path = isLoginMode ? 'login' : 'register';
             try {
-                // Change from: fetch(`http://localhost:5000/api/auth/${path}`...
-                const res = await fetch(`${BACKEND_URL}/api/auth/${path}`, {
+                // FIXED PIPELINE: Clean network block formatting securely bound
+                const res = await fetch(`${BACKEND_URL}/api/auth/${path}`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ username, password }) 
+                });
                 const data = await res.json(); if (!res.ok) return alert(data.error);
                 if (isLoginMode) { localStorage.setItem('vault_token', data.token); localStorage.setItem('vault_user', data.username); location.reload(); } 
                 else { alert("Account created successfully!"); isLoginMode = true; authToggleMode.click(); }
@@ -258,15 +281,12 @@ try {
         uploadForm.onsubmit = async (e) => {
             e.preventDefault(); const submitBtn = document.getElementById('vault-submit-btn'); submitBtn.innerText = "Encrypting..."; submitBtn.disabled = true;
             const formData = new FormData(); formData.append('title', document.getElementById('form-title').value); formData.append('artist', document.getElementById('form-artist').value); formData.append('folder', document.getElementById('form-folder').value);
+            const audioInput = document.getElementById('form-audio'); const imageInput = document.getElementById('form-image');
             
-            const audioInput = document.getElementById('form-audio'); 
-            const imageInput = document.getElementById('form-image');
-            
-            // FIX BOUNDARIES: Extract array item 0 explicitly to stop silent freezes
             if (audioInput.files && audioInput.files.length > 0) { formData.append('audio', audioInput.files[0]); }
             if (imageInput.files && imageInput.files.length > 0) { formData.append('image', imageInput.files[0]); }
             try {
-                const res = await fetch('http://localhost:5000/api/songs/upload', { method: 'POST', headers: { 'Authorization': `Bearer ${authToken}` }, body: formData });
+                const res = await fetch(`${BACKEND_URL}/api/songs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${authToken}` }, body: formData });
                 if (res.ok) { if (modal) modal.style.display = 'none'; uploadForm.reset(); loadVaultTracks(); }
             } catch { alert("Upload link dropped."); }
             finally { submitBtn.innerText = "Secure to Vault"; submitBtn.disabled = false; }
@@ -280,7 +300,7 @@ try {
         card.innerHTML = `<button class="delete-vault-btn">&times;</button><div class="cover-art" ${coverStyle}>💿</div><div class="track-title">${song.title}</div><div class="artist-name">${song.artist}</div>`;
         card.querySelector('.delete-vault-btn').onclick = async (e) => {
             e.stopPropagation(); if (!confirm("Delete track?")) return;
-            await fetch(`http://localhost:5000/api/songs/${song.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${authToken}` } });
+            await fetch(`${BACKEND_URL}/api/songs/${song.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${authToken}` } });
             card.remove(); loadVaultTracks();
         };
         targetGrid.appendChild(card);
